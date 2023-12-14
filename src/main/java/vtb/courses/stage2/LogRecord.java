@@ -11,8 +11,11 @@ public class LogRecord {
     private HashMap<LogElement, String> parts = new HashMap<>();
     @Autowired @Qualifier("logSeparator")
     private String separator;
+    @Autowired @Qualifier("elementSequence")
+    private LogElement[] elementSequence;
 
-    public LogRecord() {
+    public LogRecord(String logString) {
+        setParts(logString, elementSequence);
     }
 
     public void setParts(String logStr, LogElement[] elementSequence) {
