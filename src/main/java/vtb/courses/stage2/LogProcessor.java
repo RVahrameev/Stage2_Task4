@@ -4,17 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
+
+import java.util.Iterator;
 
 @Component
 public class LogProcessor {
 
     private Iterator<LogRecord> logIterator;
 
-    private Consumer<LogRecord> dbWriter;
+    private DbLogWriter dbWriter;
 
-    private LogProcessRules processRules;
+    private UnaryOperator<LogRecord> processRules;
+
+    private BiConsumer<LogRecord, Exception> errorLogger;
+
+    public LogProcessor() {
+    }
 
     @Autowired
     @Qualifier("logIterator")
@@ -23,13 +31,32 @@ public class LogProcessor {
     }
 
     @Autowired
-    public void setDbWriter(Consumer<LogRecord> dbWriter) {
+    @Qualifier("dbLogWriter")
+    public void setDbWriter(DbLogWriter dbWriter) {
         this.dbWriter = dbWriter;
     }
 
     @Autowired
-    public void setLogProcessRules(LogProcessRules logProcessRules) {
+    @Qualifier("logProcessRules")
+    public void setLogProcessRules(UnaryOperator<LogRecord> logProcessRules) {
         this.processRules = logProcessRules;
     }
 
+    @Autowired
+    @Qualifier("errorLoggeer")
+    public void setErrorLogger(BiConsumer<LogRecord, Exception> errorLogger) {
+        this.errorLogger = errorLogger;
+    }
+
+    public void uploadLogs() {
+        LogRecord currentRecord;
+        while (logIterator.hasNext()) {
+            currentRecord = logIterator.next();
+            try {
+                dbWriter.writeLogRecord(processRules.apply(currentRecord));
+            } catch (Exception e) {
+                errorLogger.accept(currentRecord, e);
+            }
+        }
+    }
 }

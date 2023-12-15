@@ -17,6 +17,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
     private BufferedReader fileReader;
 
     private String[] logCache;
+    private int[] fileNameIdx;
     private int logCacheIdx;
     private int logCacheNum;
 
@@ -27,6 +28,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
         this.path = path.endsWith("\\") ? path : path + '\\';
         this.files = Arrays.stream((new File(path)).listFiles()).filter(x -> x.isFile()).map(x -> x.getName()).toArray(String[]::new);
         logCache = new String[cacheSize];
+        fileNameIdx = new int[cacheSize];
         fileIdx = -1;
     }
 
@@ -41,7 +43,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
     @Override
     public LogRecord next() {
         if (hasNext()) {
-            return new LogRecord(logCache[logCacheIdx++]);
+            return new LogRecord(logCache[logCacheIdx], files[fileNameIdx[logCacheIdx++]]);
         } else {
             throw new NoSuchElementException();
         }

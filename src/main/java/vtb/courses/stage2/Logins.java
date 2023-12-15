@@ -4,6 +4,7 @@ package vtb.courses.stage2;
 import jakarta.persistence.*;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 public class Logins {
@@ -11,7 +12,7 @@ public class Logins {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "access_date")
-    private Time accessDate;
+    private Timestamp accessDate;
 
     @Column(name = "user_id")
     @ManyToOne @JoinColumn(name = "id")
@@ -19,4 +20,13 @@ public class Logins {
 
     @Column
     private String application;
+
+    public Logins() {
+    }
+
+    public Logins(LogRecord logRecord, User user) {
+        this.accessDate = Timestamp.valueOf(logRecord.getElement(LogElement.DATE));
+        this.userId = user;
+        this.application = logRecord.getElement(LogElement.APP);
+    }
 }

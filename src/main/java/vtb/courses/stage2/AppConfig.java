@@ -4,17 +4,20 @@ package vtb.courses.stage2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 @Configuration
 public class AppConfig {
 
-    Properties props = new Properties();
+    private Properties props = new Properties();
 
     public AppConfig() throws IOException {
         props.load(new FileInputStream(new File(".\\resources\\config.ini")));
@@ -36,8 +39,24 @@ public class AppConfig {
         return new LogElement[] {LogElement.LOGIN, LogElement.FAM, LogElement.IM, LogElement.OTCH, LogElement.DATE, LogElement.APP};
     }
 
+    @Bean(name = "dbLogWriter")
+    public DbLogWriter getDbLogWriter() {
+        return new PostGreLogWriter();
+    }
+
+
+    @Bean(name = "errorLoggeer")
+    public ErrorLogger getErrorLogger() {
+        return new ErrorLogger();
+    }
+
     @Bean
-    public LogProcessRules getLogProcessRules() {
+    public Properties getProperties(){
+        return props;
+    }
+
+    @Bean(name = "logProcessRules")
+    public UnaryOperator<LogRecord> getLogProcessRules() {
         LogProcessRules logProcessRules = new LogProcessRules();
         logProcessRules.addRule(LogElement.FAM, LogElementProcessors::stringFirstUpper);
         logProcessRules.addRule(LogElement.IM, LogElementProcessors::stringFirstUpper);
@@ -46,5 +65,4 @@ public class AppConfig {
         logProcessRules.addRule(LogElement.DATE, LogElementProcessors::checkDate);
         return logProcessRules;
     }
-
 }
