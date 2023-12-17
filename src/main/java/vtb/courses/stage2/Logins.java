@@ -3,7 +3,6 @@ package vtb.courses.stage2;
 
 import jakarta.persistence.*;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Entity
@@ -15,7 +14,7 @@ public class Logins {
     private Timestamp accessDate;
 
     @Column(name = "user_id")
-    @ManyToOne @JoinColumn(name = "id")
+    @ManyToOne(targetEntity = User.class) @JoinColumn(name = "id")
     private User userId;
 
     @Column
@@ -29,4 +28,5 @@ public class Logins {
         this.userId = user;
         this.application = logRecord.getElement(LogElement.APP);
     }
+
 }

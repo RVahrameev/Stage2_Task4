@@ -4,36 +4,40 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 @Component
 public class PostGreLogWriter implements DbLogWriter{
 
-    private Properties props;
     private SessionFactory factory;
     private Session session;
     private Transaction transaction;
+    private Properties properties;
 
-    private void init() {
+    public PostGreLogWriter() {}
+    public void init() {
         //configuring Hibernate
         Configuration config = new Configuration();
         config.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         config.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-        config.setProperty("hibernate.connection.url", props.getProperty("CONNECTION_STRING"));
-        config.setProperty("hibernate.connection.username", props.getProperty("USERNAME"));
-        config.setProperty("hibernate.connection.password", props.getProperty("PASSWORD"));
+        config.setProperty("hibernate.connection.url", properties.getProperty("CONNECTION_STRING"));
+        config.setProperty("hibernate.connection.username", properties.getProperty("USERNAME"));
+        config.setProperty("hibernate.connection.password", properties.getProperty("PASSWORD"));
         factory = config.buildSessionFactory();
-        config.addClass(User.class);
-        config.addClass(Logins.class);
+        //config.addClass(User.class);
+        //config.addClass(Logins.class);
     }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+        init();
+    }
+
     @Override
     public void openSession() {
-        Session session = factory.openSession();
+        session = factory.openSession();
         transaction = session.beginTransaction();
     }
 
@@ -50,8 +54,4 @@ public class PostGreLogWriter implements DbLogWriter{
         session.persist(loginRec);
     }
 
-    @Autowired
-    public void setProps(Properties props) {
-        this.props = props;
-    }
 }

@@ -1,12 +1,16 @@
 package vtb.courses.stage2;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.stream.Stream;
+import java.util.Properties;
 
 @Component
 public class FolderLogsScaner implements Iterator<LogRecord> {
@@ -20,13 +24,25 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
     private int[] fileNameIdx;
     private int logCacheIdx;
     private int logCacheNum;
+    private Properties props;
 
-    public FolderLogsScaner(String path) {
+    @Autowired
+    @Qualifier("properties")
+    public void setProps(Properties props) {
+        this.props = props;
+        init();
+    }
+
+    public void init() {
+        String path = props.getProperty("LOG_DIR");
         if (path == null || path.isBlank()) {
             throw new IllegalArgumentException("Путь к папке не может быть пустым!");
         }
-        this.path = path.endsWith("\\") ? path : path + '\\';
+        this.path = path.endsWith("/") ? path : path + '/';
         this.files = Arrays.stream((new File(path)).listFiles()).filter(x -> x.isFile()).map(x -> x.getName()).toArray(String[]::new);
+    }
+
+    public FolderLogsScaner() {
         logCache = new String[cacheSize];
         fileNameIdx = new int[cacheSize];
         fileIdx = -1;
@@ -67,21 +83,24 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
         }
         logCacheNum = 0;
         logCacheIdx = 0;
-        for (int i = 0; i < cacheSize; i++) {
-            try {
-                logCache[i] = fileReader.readLine();
-                if (logCache[i] != null) {
-                    logCacheNum++;
-                } else {
-                    fileReader = getNextFileReader();
-                    if (fileReader == null) {
-                        break;
+        if (fileReader != null) {
+            for (int i = 0; i < cacheSize; i++) {
+                try {
+                    logCache[i] = fileReader.readLine();
+                    fileNameIdx[i] = fileIdx - 1;
+                    if (logCache[i] != null) {
+                        logCacheNum++;
                     } else {
-                        i--;
+                        fileReader = getNextFileReader();
+                        if (fileReader == null) {
+                            break;
+                        } else {
+                            i--;
+                        }
                     }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
         }
     }

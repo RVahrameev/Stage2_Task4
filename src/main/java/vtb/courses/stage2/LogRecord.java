@@ -8,14 +8,25 @@ import java.util.HashMap;
 
 @Component
 public class LogRecord {
-    private HashMap<LogElement, String> parts = new HashMap<>();
+    private final HashMap<LogElement, String> parts = new HashMap<>();
     private String fileName;
     private String sourceString;
 
+    private static String separator;
+    private static LogElement[] elementSequence;
+
     @Autowired @Qualifier("logSeparator")
-    private String separator;
+    public void setSeparator(String separator) {
+        System.out.println("separator "+separator.length());
+        this.separator = separator;
+    }
+
     @Autowired @Qualifier("elementSequence")
-    private LogElement[] elementSequence;
+    public void setElementSequence(LogElement[] elementSequence) {
+        this.elementSequence = elementSequence;
+    }
+
+    public LogRecord(){}
 
     public LogRecord(String logString, String fileName) {
         setParts(logString, elementSequence);
@@ -24,11 +35,12 @@ public class LogRecord {
     }
 
     private void setParts(String logStr, LogElement[] elementSequence) {
-       int i = 0;
-       for (String s: logStr.split(separator)) {
-           parts.put(elementSequence[i], s);
-           i++;
-       }
+        System.out.println("setParts "+separator.length());
+        int i = 0;
+        for (String s: logStr.split(separator)) {
+            parts.put(elementSequence[i], s);
+            i++;
+        }
     }
 
     public void setElement(LogElement logElement, String logPart) {

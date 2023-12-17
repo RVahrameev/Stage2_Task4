@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import java.util.Iterator;
@@ -43,13 +42,14 @@ public class LogProcessor {
     }
 
     @Autowired
-    @Qualifier("errorLoggeer")
+    @Qualifier("errorLogger")
     public void setErrorLogger(BiConsumer<LogRecord, Exception> errorLogger) {
         this.errorLogger = errorLogger;
     }
 
     public void uploadLogs() {
         LogRecord currentRecord;
+        dbWriter.openSession();
         while (logIterator.hasNext()) {
             currentRecord = logIterator.next();
             try {
@@ -58,5 +58,6 @@ public class LogProcessor {
                 errorLogger.accept(currentRecord, e);
             }
         }
+        dbWriter.closeSession();
     }
 }

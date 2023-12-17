@@ -1,37 +1,40 @@
 package vtb.courses.stage2;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 @Configuration
 public class AppConfig {
 
-    private Properties props = new Properties();
+    private static Properties props = new Properties();
 
     public AppConfig() throws IOException {
-        props.load(new FileInputStream(new File(".\\resources\\config.ini")));
+        System.out.println("config construct");
+        props.load(this.getClass().getResourceAsStream("/config.ini"));
+    }
+
+    @Bean(name = "properties")
+    public Properties getProperties(){
+        System.out.println("get proprties");
+        return props;
     }
 
     @Bean(name = "logIterator")
-    @Scope("prototype")
+    @Scope("singleton")
     public Iterator<LogRecord> getLogIterator() {
-        return new FolderLogsScaner(props.getProperty("LOG_DIR"));
+        return new FolderLogsScaner();
     }
 
     @Bean(name = "logSeparator")
     public String getSeparator() {
-        return " ";
+        System.out.println("getSeparator");return "\t";
     }
 
     @Bean(name = "elementSequence")
@@ -45,14 +48,9 @@ public class AppConfig {
     }
 
 
-    @Bean(name = "errorLoggeer")
+    @Bean(name = "errorLogger")
     public ErrorLogger getErrorLogger() {
         return new ErrorLogger();
-    }
-
-    @Bean
-    public Properties getProperties(){
-        return props;
     }
 
     @Bean(name = "logProcessRules")
