@@ -13,8 +13,7 @@ public class Logins {
     @Column(name = "access_date")
     private Timestamp accessDate;
 
-    @Column(name = "user_id")
-    @ManyToOne(targetEntity = User.class) @JoinColumn(name = "id")
+    @ManyToOne(targetEntity = User.class) @JoinColumn(name = "user_id")
     private User userId;
 
     @Column

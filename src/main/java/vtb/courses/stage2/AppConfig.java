@@ -1,7 +1,6 @@
 package vtb.courses.stage2;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -42,7 +41,7 @@ public class AppConfig {
 
     @Bean(name = "dbLogWriter")
     public DbLogWriter getDbLogWriter() {
-        return new PostGreLogWriter();
+        return new HibernateLogWriter();
     }
 
 

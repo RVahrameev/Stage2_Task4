@@ -31,7 +31,7 @@ public class ErrorLoggerTest {
 
         Assertions.assertDoesNotThrow(() ->
                 applicationContext = new AnnotationConfigApplicationContext("vtb.courses.stage2")
-        , "Не удалось создать контект приложения Spring");
+        , "Не удалось создать контекст приложения Spring");
         Assertions.assertDoesNotThrow(() ->
                 errorLogger = applicationContext.getBean(ErrorLogger.class)
         , "Не удалось создать bean errorLogger");

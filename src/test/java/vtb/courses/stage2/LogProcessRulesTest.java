@@ -20,7 +20,7 @@ public class LogProcessRulesTest {
         String logStr;
         Assertions.assertDoesNotThrow(() ->
                         applicationContext = new AnnotationConfigApplicationContext("vtb.courses.stage2")
-                , "Не удалось создать контект приложения Spring");
+                , "Не удалось создать контекст приложения Spring");
         Assertions.assertDoesNotThrow(() ->
                         logSeparator = applicationContext.getBean("logSeparator", String.class)
                 , "Не удалось создать bean logSeparator");
