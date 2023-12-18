@@ -17,7 +17,6 @@ public class LogRecord {
 
     @Autowired @Qualifier("logSeparator")
     public void setSeparator(String separator) {
-        System.out.println("separator "+separator.length());
         this.separator = separator;
     }
 
@@ -35,11 +34,9 @@ public class LogRecord {
     }
 
     private void setParts(String logStr, LogElement[] elementSequence) {
-        System.out.println("setParts "+separator.length());
         int i = 0;
         for (String s: logStr.split(separator)) {
-            parts.put(elementSequence[i], s);
-            i++;
+            parts.put(elementSequence[i++], s);
         }
     }
 

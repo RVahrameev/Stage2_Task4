@@ -23,10 +23,12 @@ public class LogProcessRules implements UnaryOperator<LogRecord> {
     public LogRecord apply(LogRecord logRecord) {
         for (LogElement logElement: logElementSequence) {
             String element = logRecord.getElement(logElement);
-            for (UnaryOperator<String> operator: rules.get(logElement)) {
-                element = operator.apply(element);
+            if (rules.containsKey(logElement)) {
+                for (UnaryOperator<String> operator : rules.get(logElement)) {
+                    element = operator.apply(element);
+                }
+                logRecord.setElement(logElement, element);
             }
-            logRecord.setElement(logElement, element);
         }
         return logRecord;
     }

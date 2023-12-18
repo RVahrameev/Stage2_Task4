@@ -16,13 +16,11 @@ public class AppConfig {
     private static Properties props = new Properties();
 
     public AppConfig() throws IOException {
-        System.out.println("config construct");
         props.load(this.getClass().getResourceAsStream("/config.ini"));
     }
 
     @Bean(name = "properties")
     public Properties getProperties(){
-        System.out.println("get proprties");
         return props;
     }
 
@@ -34,7 +32,7 @@ public class AppConfig {
 
     @Bean(name = "logSeparator")
     public String getSeparator() {
-        System.out.println("getSeparator");return "\t";
+        return "\t";
     }
 
     @Bean(name = "elementSequence")

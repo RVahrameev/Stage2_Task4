@@ -31,7 +31,7 @@ public class ErrorLogger implements BiConsumer<LogRecord, Exception> {
     @Override
     public void accept(LogRecord logRecord, Exception e) {
         try {
-            Files.write(Path.of(logPath+logRecord.getFileName()+"_ERR"), (logRecord.getSourceString()+": "+e.getMessage()).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            Files.write(Path.of(logPath+logRecord.getFileName()+"_ERR"), (logRecord.getSourceString()+": "+e.getMessage()+"\r\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

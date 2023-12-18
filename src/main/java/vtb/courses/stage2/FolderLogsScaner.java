@@ -67,7 +67,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
 
     private BufferedReader getNextFileReader() {
         try {
-            if (files.length == 0 || fileIdx == files.length) {
+            if (files.length == 0 || fileIdx == files.length-1) {
                 return null;
             } else {
                 return new BufferedReader(new FileReader(path + files[++fileIdx]));
@@ -87,7 +87,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
             for (int i = 0; i < cacheSize; i++) {
                 try {
                     logCache[i] = fileReader.readLine();
-                    fileNameIdx[i] = fileIdx - 1;
+                    fileNameIdx[i] = fileIdx;
                     if (logCache[i] != null) {
                         logCacheNum++;
                     } else {
