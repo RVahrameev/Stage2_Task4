@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import vtb.courses.stage2.fileio.ErrorLogger;
+import vtb.courses.stage2.struct.LogElement;
+import vtb.courses.stage2.struct.LogRecord;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +16,6 @@ import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class FolderLogsScanerTest {
     SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     DecimalFormat decimalFormat = new DecimalFormat("00");
 
-    public void formLogFiles() throws IOException {
+    public void formLogFiles(AnnotationConfigApplicationContext applicationContext) throws IOException {
         Assertions.assertDoesNotThrow(() ->
                         properties = applicationContext.getBean("properties", Properties.class)
                 , "Не удалось создать bean properties");
@@ -71,7 +73,7 @@ public class FolderLogsScanerTest {
                         applicationContext = new AnnotationConfigApplicationContext("vtb.courses.stage2")
                 , "Не удалось создать контекст приложения Spring");
 
-        formLogFiles();
+        formLogFiles(applicationContext);
 
         Assertions.assertDoesNotThrow(() ->
                         logIterator = applicationContext.getBean("logIterator", Iterator.class)
@@ -106,11 +108,4 @@ public class FolderLogsScanerTest {
 
     }
 
-    @Test
-    public void test2(){
-        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
-        DecimalFormat decimalFormat = new DecimalFormat("00");
-        System.out.println((new SimpleDateFormat("dd/MM/yyyy hh:mm:ss")).format(timestamp));
-        System.out.println(decimalFormat.format(12));
-    }
 }

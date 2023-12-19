@@ -1,8 +1,9 @@
-package vtb.courses.stage2;
+package vtb.courses.stage2.fileio;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import vtb.courses.stage2.struct.LogRecord;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,11 +12,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 
+/**
+ * Класс ErrorLogger реализует бин для записи в журнал ошибок, информации о записи лога вызвавшей исключение при обработке
+ */
 @Component
 public class ErrorLogger implements BiConsumer<LogRecord, Exception> {
 
     private String logPath;
-    private Properties properties;
 
     public ErrorLogger() {
     }
@@ -23,7 +26,6 @@ public class ErrorLogger implements BiConsumer<LogRecord, Exception> {
     @Autowired
     @Qualifier("properties")
     public void setProperties(Properties properties) {
-        this.properties = properties;
         logPath = properties.getProperty("ERROR_LOG_DIR");
         logPath = logPath.endsWith("/") ? logPath : logPath + '/';
     }

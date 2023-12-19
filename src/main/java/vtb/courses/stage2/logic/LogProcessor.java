@@ -1,14 +1,25 @@
-package vtb.courses.stage2;
+package vtb.courses.stage2.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import vtb.courses.stage2.db.DbLogWriter;
+import vtb.courses.stage2.struct.LogRecord;
 
 import java.util.function.BiConsumer;
 import java.util.function.UnaryOperator;
 
 import java.util.Iterator;
 
+/**
+ * Класс LogProcessor представляет собой собственно реализацию основного алгоритма задачи<p>
+ * Посредством вызова бинов<p>
+ * - logIterator<p>
+ * - logProcessRules<p>
+ * - dbLogWriter<p>
+ * - errorLogger<p>
+ * производит загрузку логов в БД и сохранения информации о не загруженных логах в журнале ошибок
+ */
 @Component
 public class LogProcessor {
 

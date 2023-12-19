@@ -1,9 +1,13 @@
-package vtb.courses.stage2;
+package vtb.courses.stage2.struct;
 
 
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+
+/**
+ * Класс Logins представляет хранимую в БД сущьность о действиях пользователя
+ */
 
 @Entity
 public class Logins {
@@ -28,4 +32,19 @@ public class Logins {
         this.application = logRecord.getElement(LogElement.APP);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public Timestamp getAccessDate() {
+        return accessDate;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public String getApplication() {
+        return application;
+    }
 }

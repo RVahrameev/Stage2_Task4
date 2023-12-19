@@ -1,16 +1,19 @@
-package vtb.courses.stage2;
+package vtb.courses.stage2.fileio;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import vtb.courses.stage2.struct.LogRecord;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Properties;
+
+/**
+ * Класс FolderLogsScaner реализует итератор позволяющий пройтись по всем записям логов, хранящихся в определённой папке
+ */
 
 @Component
 public class FolderLogsScaner implements Iterator<LogRecord> {
@@ -20,8 +23,8 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
     private int fileIdx;
     private BufferedReader fileReader;
 
-    private String[] logCache;
-    private int[] fileNameIdx;
+    private final String[] logCache;
+    private final int[] fileNameIdx;
     private int logCacheIdx;
     private int logCacheNum;
     private Properties props;
@@ -39,7 +42,12 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
             throw new IllegalArgumentException("Путь к папке не может быть пустым!");
         }
         this.path = path.endsWith("/") ? path : path + '/';
-        this.files = Arrays.stream((new File(path)).listFiles()).filter(x -> x.isFile()).map(x -> x.getName()).toArray(String[]::new);
+        File[] files = (new File(path)).listFiles();
+        if (files != null) {
+            this.files = Arrays.stream(files).filter(File::isFile).map(File::getName).toArray(String[]::new);
+        } else {
+            throw new NoSuchElementException("В папке логов нет данных");
+        }
     }
 
     public FolderLogsScaner() {
@@ -50,7 +58,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
 
     @Override
     public boolean hasNext() {
-        if ((logCache == null) || (logCacheIdx == logCacheNum)) {
+        if (logCacheIdx == logCacheNum) {
             precacheLogs();
         }
         return (logCacheNum != 0);

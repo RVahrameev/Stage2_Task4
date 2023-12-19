@@ -1,4 +1,4 @@
-package vtb.courses.stage2;
+package vtb.courses.stage2.struct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -6,6 +6,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
+/**
+ * Класс LogRecord представляет собой временное хранилище для записи лога, на пути от файла к БД. <p>
+ * Содержит:<p>
+ *     - исходную строку лога<p>
+ *     - отдельные элементы строки лога разложенные по типам элементов лога<p>
+ *     - имя файла которому принадлежит строка
+ */
 @Component
 public class LogRecord {
     private final HashMap<LogElement, String> parts = new HashMap<>();
@@ -17,12 +24,12 @@ public class LogRecord {
 
     @Autowired @Qualifier("logSeparator")
     public void setSeparator(String separator) {
-        this.separator = separator;
+        LogRecord.separator = separator;
     }
 
     @Autowired @Qualifier("elementSequence")
     public void setElementSequence(LogElement[] elementSequence) {
-        this.elementSequence = elementSequence;
+        LogRecord.elementSequence = elementSequence;
     }
 
     public LogRecord(){}

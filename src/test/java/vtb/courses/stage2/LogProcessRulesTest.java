@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import vtb.courses.stage2.struct.LogElement;
+import vtb.courses.stage2.struct.LogRecord;
 
 import java.util.function.UnaryOperator;
 
@@ -12,12 +14,12 @@ public class LogProcessRulesTest {
     UnaryOperator<LogRecord> logProcessRules;
     LogRecord logRecord;
     String logSeparator;
+    String logStr;
 
 
     @Test
     @DisplayName("Проверка модуля LogProcessRules")
     public void Test(){
-        String logStr;
         Assertions.assertDoesNotThrow(() ->
                         applicationContext = new AnnotationConfigApplicationContext("vtb.courses.stage2")
                 , "Не удалось создать контекст приложения Spring");

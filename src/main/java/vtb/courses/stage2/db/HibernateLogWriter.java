@@ -1,24 +1,27 @@
-package vtb.courses.stage2;
+package vtb.courses.stage2.db;
 
+import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import java.util.Properties;
+import vtb.courses.stage2.struct.LogElement;
+import vtb.courses.stage2.struct.LogRecord;
+import vtb.courses.stage2.struct.Logins;
+import vtb.courses.stage2.struct.User;
 
+/**
+ * Класс HibernateLogWriter инициализирует Hibernate  и реализует интефейс сохранения записей логов в БД
+ */
 @Component
-public class HibernateLogWriter implements DbLogWriter{
+public class HibernateLogWriter implements DbLogWriter {
 
-    private SessionFactory factory;
+    private final SessionFactory factory;
     private Session session;
     private Transaction transaction;
-    private Properties properties;
 
-    public HibernateLogWriter() {}
-    public void init() {
+    public HibernateLogWriter() {
         //configuring Hibernate
         Configuration config = new Configuration();
         config.configure();
@@ -32,12 +35,6 @@ public class HibernateLogWriter implements DbLogWriter{
         factory = config.buildSessionFactory();
     }
 
-    @Autowired
-    @Qualifier("properties")
-    public void setProperties(Properties properties) {
-        this.properties = properties;
-        init();
-    }
 
     @Override
     public void openSession() {
@@ -53,11 +50,19 @@ public class HibernateLogWriter implements DbLogWriter{
 
     @Override
     public void writeLogRecord(LogRecord logRecord) {
-        User dbUser = session.createQuery("from User where username = '"+logRecord.getElement(LogElement.LOGIN)+"'", User.class).getResultList().get(0);
-        System.out.println(dbUser);
-        User user = User.getUser(logRecord);
-        Logins loginRec = new Logins(logRecord, user);
+        User dbUser;
+        try {
+            dbUser = session.createQuery("from vtb.courses.stage2.struct.User where username = '" + logRecord.getElement(LogElement.LOGIN) + "'", User.class).getSingleResult();
+        } catch (NoResultException e){
+            dbUser = User.getUser(logRecord);
+            session.persist(dbUser);
+            System.out.println(dbUser.getId());
+        }
+        Logins loginRec = new Logins(logRecord, dbUser);
         session.persist(loginRec);
     }
 
+    public SessionFactory getFactory() {
+        return factory;
+    }
 }

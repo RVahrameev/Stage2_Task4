@@ -1,8 +1,11 @@
 package vtb.courses.stage2;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import vtb.courses.stage2.fileio.ErrorLogger;
+import vtb.courses.stage2.struct.LogRecord;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,6 +29,7 @@ public class ErrorLoggerTest {
      * Записывает с его помощью тестовую строку в файл лога ошибок загрузки и проверяет результат записи
      */
     @Test
+    @DisplayName("Проверка бина ErrorLogger - логгирования ошибок загрузки ")
     public void test() throws IOException {
 
 

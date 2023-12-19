@@ -1,12 +1,18 @@
-package vtb.courses.stage2;
+package vtb.courses.stage2.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import vtb.courses.stage2.struct.LogElement;
+import vtb.courses.stage2.struct.LogRecord;
 
 import java.util.HashMap;
 import java.util.function.UnaryOperator;
 
+/**
+ * Класс LogProcessRules реализует бин, который содержит правила обработки элементов лога
+ * и метод для применения этих правил к записи лога.
+ */
 @Component
 public class LogProcessRules implements UnaryOperator<LogRecord> {
     private final HashMap<LogElement, UnaryOperator<String>[]> rules = new HashMap<>();
