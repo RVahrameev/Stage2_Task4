@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.UnaryOperator;
 
+/**
+ * CheckDate - компонент реализующий проверка поля даты в сторке логов
+ */
 @LogTransformation
 @Component
 public class CheckDate implements UnaryOperator<String> {

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.UnaryOperator;
 
+/**
+ * StringFirstUpper - компонент реализующий нормализацию ФИО в строке лога
+ */
 @LogTransformation("StringFirstUpper.log")
 @Component
 public class StringFirstUpper implements UnaryOperator<String> {

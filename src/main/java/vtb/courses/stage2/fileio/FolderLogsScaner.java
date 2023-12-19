@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 
 /**
- * Класс FolderLogsScaner реализует итератор позволяющий пройтись по всем записям логов, хранящихся в определённой папке
+ * Класс FolderLogsScaner реализует итератор позволяющий пройтись по всем строкам логов, хранящихся в определённой папке
  */
 
 @Component
@@ -37,11 +37,14 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
     }
 
     public void init() {
+        // определяем папку с данными
         String path = props.getProperty("LOG_DIR");
         if (path == null || path.isBlank()) {
             throw new IllegalArgumentException("Путь к папке не может быть пустым!");
         }
         this.path = path.endsWith("/") ? path : path + '/';
+
+        // вычитываем из папки список файлов, которые будем читать
         File[] files = (new File(path)).listFiles();
         if (files != null) {
             this.files = Arrays.stream(files).filter(File::isFile).map(File::getName).toArray(String[]::new);
@@ -92,6 +95,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
         logCacheNum = 0;
         logCacheIdx = 0;
         if (fileReader != null) {
+            // наполняем кеш порцией данных из файлов логов
             for (int i = 0; i < cacheSize; i++) {
                 try {
                     logCache[i] = fileReader.readLine();
@@ -99,6 +103,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
                     if (logCache[i] != null) {
                         logCacheNum++;
                     } else {
+                        // если очередное вычитывание из файла ничего не дало, то переключаемся на следующий файл
                         fileReader = getNextFileReader();
                         if (fileReader == null) {
                             break;

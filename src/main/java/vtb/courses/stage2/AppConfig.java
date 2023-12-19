@@ -72,6 +72,7 @@ public class AppConfig {
     @Bean(name = "logProcessRules")
     public UnaryOperator<LogRecord> getLogProcessRules() {
         LogProcessRules logProcessRules = new LogProcessRules();
+        // формируем набор правил для проверки/корректировки элементов лога
         logProcessRules.addRule(LogElement.FAM, fioAction);
         logProcessRules.addRule(LogElement.IM, fioAction);
         logProcessRules.addRule(LogElement.OTCH, fioAction);

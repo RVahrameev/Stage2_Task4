@@ -52,11 +52,12 @@ public class HibernateLogWriter implements DbLogWriter {
     public void writeLogRecord(LogRecord logRecord) {
         User dbUser;
         try {
+            // сначала пробуем считать пользователя из БД
             dbUser = session.createQuery("from vtb.courses.stage2.struct.User where username = '" + logRecord.getElement(LogElement.LOGIN) + "'", User.class).getSingleResult();
         } catch (NoResultException e){
+            // если в БД не нашли - создаём
             dbUser = User.getUser(logRecord);
             session.persist(dbUser);
-            System.out.println(dbUser.getId());
         }
         Logins loginRec = new Logins(logRecord, dbUser);
         session.persist(loginRec);

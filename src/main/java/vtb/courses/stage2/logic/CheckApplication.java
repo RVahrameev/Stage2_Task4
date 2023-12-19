@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.UnaryOperator;
 
+/**
+ * CheckApplication - компонент реализующий функцию проверки поля приложения в строке логов
+ */
 @LogTransformation
 @Component
 public class CheckApplication implements UnaryOperator<String> {

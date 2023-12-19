@@ -29,6 +29,10 @@ public class User {
         this.username = username;
         this.fio = fio;
     }
+
+    /**
+     * getUserIdx - ищет пользователя во внутреннем кеше
+     */
     private static int getUserIdx(String username) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).username.equals(username)) {
@@ -54,8 +58,13 @@ public class User {
         this.id = id;
     }
 
+    /**
+     * getUser - возвращает объект пользователя из внутреннего кеша или создаёт новый
+     */
     public static User getUser(String username, String fio) {
+        // сначала ищем пользователя в кеше
         int idx = getUserIdx(username);
+        // если не нашли - создаём и сохраняем в кеш
         if (idx == -1) {
             User newUser = new User(username, fio);
             users.add(newUser);
@@ -65,7 +74,11 @@ public class User {
         }
     }
 
+    /**
+     * getUser - возвращает объект пользователя из внутреннего кеша или создаёт новый
+     */
     public static User getUser(LogRecord logRecord) {
+        // просто перевызов к перекрытому методу
         return getUser(logRecord.getElement(LogElement.LOGIN),
                 String.join(" ",
                         logRecord.getElement(LogElement.FAM),

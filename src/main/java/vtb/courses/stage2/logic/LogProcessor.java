@@ -60,12 +60,15 @@ public class LogProcessor {
 
     public void uploadLogs() {
         LogRecord currentRecord;
+        // посточно вычитываем логи с помощью бина-итератора
         dbWriter.openSession();
         while (logIterator.hasNext()) {
             currentRecord = logIterator.next();
             try {
+                // применяем к вычитанной стоке логов правила обоработки и сохраняем результат в БД
                 dbWriter.writeLogRecord(processRules.apply(currentRecord));
             } catch (Exception e) {
+                // в случае ошибки завём бин фиксации ошибочной стоки в файле ошибок загрузки
                 errorLogger.accept(currentRecord, e);
             }
         }

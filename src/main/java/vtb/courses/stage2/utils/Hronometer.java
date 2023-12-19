@@ -14,6 +14,11 @@ import java.time.LocalDateTime;
 import java.util.Properties;
 
 import static java.lang.System.nanoTime;
+
+/**
+ * Класс Hronometer - служит для замера времени исполения методов заданых интерфейсом T
+ * и сохранения информации в файл
+ */
 @Component
 public class Hronometer<T> implements InvocationHandler {
     private T wrappedObject;

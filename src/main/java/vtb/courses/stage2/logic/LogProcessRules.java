@@ -20,19 +20,26 @@ public class LogProcessRules implements UnaryOperator<LogRecord> {
     @Qualifier("elementSequence")
     private LogElement[] logElementSequence;
 
+    /**
+     * Метод addRule - позволяет задать для определённого элемента логов некое правило обработки
+     */
     public void addRule(LogElement logElement, UnaryOperator<String>... rules) {
         this.rules.put(logElement, rules);
     }
 
-    // Метод применяет к записи лога правила обработки
+    /** Метод apply применяет к записи лога правила обработки заданные извне в мапе rules
+     */
     @Override
     public LogRecord apply(LogRecord logRecord) {
+        // цикл по соствляющим элементам сторки лога
         for (LogElement logElement: logElementSequence) {
             String element = logRecord.getElement(logElement);
+            // если для этого типа элемента лога, заданы обработчики - зовём их по очереди
             if (rules.containsKey(logElement)) {
                 for (UnaryOperator<String> operator : rules.get(logElement)) {
                     element = operator.apply(element);
                 }
+                // результат возвращаем в исходную строку логов
                 logRecord.setElement(logElement, element);
             }
         }
