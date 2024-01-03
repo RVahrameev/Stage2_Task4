@@ -56,7 +56,7 @@ public class ErrorLoggerTest {
         File errorFile = new File(path + errorFileName + "_ERR");
         errorFile.delete();
         Assertions.assertDoesNotThrow(() ->
-                errorLogger.accept(logRecord, new Exception("Тестовая ошибка"))
+                errorLogger.logError(logRecord, new Exception("Тестовая ошибка"))
         , "Не удалось записать ошибку в лог ошибок обработки через errorLogger");
         String res_str = (new BufferedReader(new FileReader(path + errorFileName + "_ERR"))).readLine();
         Assertions.assertEquals(logStr +": Тестовая ошибка", res_str, "Сохранённая запись в файле ошибок не соответствует ожиданиям.");

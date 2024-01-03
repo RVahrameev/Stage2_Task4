@@ -12,7 +12,7 @@ public class App
     public static void main( String[] args ) {
         AnnotationConfigApplicationContext applicationContext =
                 new AnnotationConfigApplicationContext("vtb.courses.stage2.logic", "vtb.courses.stage2");
-        LogProcessor logProcessor = applicationContext.getBean("logProcessor", LogProcessor.class);
+        LogProcessor logProcessor = applicationContext.getBean(LogProcessor.class);
         logProcessor.uploadLogs();
     }
 }

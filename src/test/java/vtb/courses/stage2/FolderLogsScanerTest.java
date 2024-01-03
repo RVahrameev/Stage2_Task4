@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import vtb.courses.stage2.fileio.ErrorLogger;
+import vtb.courses.stage2.fileio.FolderLogsScanner;
+import vtb.courses.stage2.logic.LogProcessRules;
 import vtb.courses.stage2.struct.LogElement;
 import vtb.courses.stage2.struct.LogRecord;
 
@@ -17,17 +19,15 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.UnaryOperator;
 
 public class FolderLogsScanerTest {
     AnnotationConfigApplicationContext applicationContext;
     Properties properties;
     String logSeparator;
-    Iterator<LogRecord> logIterator;
-    UnaryOperator<LogRecord> logProcessRules;
+    FolderLogsScanner logIterator;
+    LogProcessRules logProcessRules;
     ErrorLogger errorLogger;
 
     Map<String, String> srcLog = new HashMap<>();
@@ -76,32 +76,31 @@ public class FolderLogsScanerTest {
         formLogFiles(applicationContext);
 
         Assertions.assertDoesNotThrow(() ->
-                        logIterator = applicationContext.getBean("logIterator", Iterator.class)
-                , "Не удалось создать bean logIterator");
+                        logIterator = applicationContext.getBean(FolderLogsScanner.class)
+                , "Не удалось создать bean FolderLogsScanner");
 
         Assertions.assertDoesNotThrow(() ->
-                        logProcessRules = applicationContext.getBean("logProcessRules", UnaryOperator.class)
-                , "Не удалось создать bean logProcessRules");
+                        logProcessRules = applicationContext.getBean(LogProcessRules.class)
+                , "Не удалось создать bean LogProcessRules");
 
         Assertions.assertDoesNotThrow(() ->
                         errorLogger = applicationContext.getBean(ErrorLogger.class)
-                , "Не удалось создать bean errorLogger");
+                , "Не удалось создать bean ErrorLogger");
 
 
         Assertions.assertDoesNotThrow(() -> {
-                    int ii = 0;
                     LogRecord currentRecord;
                     while (logIterator.hasNext()) {
                         currentRecord = logIterator.next();
                         try {
-                            logProcessRules.apply(currentRecord);
+                            logProcessRules.processRecord(currentRecord);
                             resLog.put(currentRecord.getElement(LogElement.LOGIN) + currentRecord.getElement(LogElement.DATE), currentRecord.getSourceString());
                         } catch (Exception e) {
-                            errorLogger.accept(currentRecord, e);
+                            errorLogger.logError(currentRecord, e);
                         }
                     }
                 }
-                , "Не удалось прочитать логи посредством бина logIterator");
+                , "Не удалось прочитать логи посредством бина FolderLogsScanner");
 
         Assertions.assertEquals(srcLog.size(), resLog.size(), "Кол-во исходных записей не равно количеству обработанных");
         srcLog.forEach((k, v)->Assertions.assertEquals(v, resLog.get(k), "Загруженная запись не соответствует исходной"));

@@ -1,28 +1,20 @@
 package vtb.courses.stage2.logic;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-
-import java.util.function.UnaryOperator;
 
 /**
  * CheckApplication - компонент реализующий функцию проверки поля приложения в строке логов
  */
 @LogTransformation
 @Component
-public class CheckApplication implements UnaryOperator<String> {
+public class CheckApplication implements LogVerifier {
+
     @Override
-    public String apply(String s) {
-        if (s.equals("web") || s.equals("mobile")) {
-            return s;
+    public String verify(String strToCheck) {
+        if (strToCheck.equals("web") || strToCheck.equals("mobile")) {
+            return strToCheck;
         } else {
-            return "other:" + s;
+            return "other:" + strToCheck;
         }
     }
-
-    @Bean(name = "checkApplication")
-    public static UnaryOperator<String> getOperation(){
-        return new CheckApplication();
-    }
-
 }

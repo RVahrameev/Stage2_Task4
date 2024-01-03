@@ -7,7 +7,6 @@ import vtb.courses.stage2.struct.LogRecord;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
@@ -16,7 +15,7 @@ import java.util.Properties;
  */
 
 @Component
-public class FolderLogsScaner implements Iterator<LogRecord> {
+public class FolderLogsScannerImpl implements FolderLogsScanner {
     private final int cacheSize = 100;
     private String path;
     private String[] files;
@@ -53,7 +52,7 @@ public class FolderLogsScaner implements Iterator<LogRecord> {
         }
     }
 
-    public FolderLogsScaner() {
+    public FolderLogsScannerImpl() {
         logCache = new String[cacheSize];
         fileNameIdx = new int[cacheSize];
         fileIdx = -1;

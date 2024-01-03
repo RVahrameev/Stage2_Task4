@@ -31,8 +31,8 @@ public class HibernateLogWriterTest {
                         applicationContext = new AnnotationConfigApplicationContext("vtb.courses.stage2")
                 , "Не удалось создать контекст приложения Spring");
         Assertions.assertDoesNotThrow(() ->
-                        dbLogWriter = applicationContext.getBean("dbLogWriter", DbLogWriter.class)
-                , "Не удалось создать bean dbLogWriter");
+                        dbLogWriter = applicationContext.getBean(DbLogWriter.class)
+                , "Не удалось создать bean DbLogWriter");
         Assertions.assertDoesNotThrow(() ->
                         logSeparator = applicationContext.getBean("logSeparator", String.class)
                 , "Не удалось создать bean logSeparator");

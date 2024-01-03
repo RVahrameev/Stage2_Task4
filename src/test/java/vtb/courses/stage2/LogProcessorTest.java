@@ -12,8 +12,6 @@ import vtb.courses.stage2.db.DbLogWriter;
 import vtb.courses.stage2.db.HibernateLogWriter;
 import vtb.courses.stage2.logic.LogProcessor;
 
-import java.io.IOException;
-
 public class LogProcessorTest {
     AnnotationConfigApplicationContext applicationContext;
     DbLogWriter dbLogWriter;
@@ -21,13 +19,13 @@ public class LogProcessorTest {
 
     @Test
     @DisplayName("Интеграционный тест")
-    public void test() throws IOException {
+    public void test() {
         Assertions.assertDoesNotThrow(() ->
                 applicationContext = new AnnotationConfigApplicationContext("vtb.courses.stage2")
                 , "Не удалось создать контекст приложения Spring");
         Assertions.assertDoesNotThrow(() ->
-                dbLogWriter = applicationContext.getBean("dbLogWriter", DbLogWriter.class)
-                , "Не удалось создать bean dbLogWriter");
+                dbLogWriter = applicationContext.getBean(DbLogWriter.class)
+                , "Не удалось создать bean DbLogWriter");
 
         FolderLogsScanerTest logsScanerTest = new FolderLogsScanerTest();
         Assertions.assertDoesNotThrow(() ->
@@ -35,8 +33,8 @@ public class LogProcessorTest {
                 , "Не удалось создать тестовые файлы логов");
 
         Assertions.assertDoesNotThrow(() ->
-                        logProcessor = applicationContext.getBean("logProcessor", LogProcessor.class)
-                , "Не удалось создать bean logProcessor");
+                        logProcessor = applicationContext.getBean(LogProcessor.class)
+                , "Не удалось создать bean LogProcessor");
         Assertions.assertDoesNotThrow(() ->
                 logProcessor.uploadLogs()
                 , "Не удалось загрузить записи логов в БД");
